@@ -46,7 +46,8 @@ gc.collect()
 last_updated = time.ticks_ms()
 led.set_rgb(61, 21, 15)  
 status, artist, song = get_song_data("bbc_radio_two")
-led.set_rgb(0, 32, 0) 
+led.set_rgb(0, 32, 0)
+gc.collect()
 display = create_display()
 
 while True:
@@ -80,12 +81,12 @@ while True:
 
     ticks_now = time.ticks_ms()
     
-    if time.ticks_diff(ticks_now, last_updated) > 30000:
+    if time.ticks_diff(ticks_now, last_updated) > secrets.REFRESH_INTERVAL * 1000:
         led.set_rgb(61, 21, 15)   
         display = None
         gc.collect()
         status, artist, song = get_song_data("bbc_radio_two")
-            
+        gc.collect()    
         display = create_display()
         last_updated = time.ticks_ms()
         led.set_rgb(0, 32, 0)   
