@@ -81,7 +81,6 @@ while True:
     ticks_now = time.ticks_ms()
     
     if time.ticks_diff(ticks_now, last_updated) > 30000:
-        print("time to update from api")
         led.set_rgb(61, 21, 15)   
         display = None
         gc.collect()
