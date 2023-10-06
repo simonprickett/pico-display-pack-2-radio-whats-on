@@ -29,15 +29,19 @@ WHITE_PEN = display.create_pen(255, 255, 255)
 display.set_pen(BLACK_PEN)
 display.clear()
 
+current_station = "bbc_radio_two"
+
 # TODO some sort of loading message...
+led.set_rgb(128, 0, 0) 
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 wlan.connect(secrets.WIFI_SSID, secrets.WIFI_PASSWORD)
 
 while not wlan.isconnected() and wlan.status() >= 0:
-    print("connecting")
+    led.set_rgb(61, 21, 15) 
     time.sleep(0.2)
 
+led.set_rgb(0, 32, 0)
 show_artist = True
 
 display = None
@@ -45,7 +49,7 @@ gc.collect()
 
 last_updated = time.ticks_ms()
 led.set_rgb(61, 21, 15)  
-status, artist, song = get_song_data("bbc_radio_two")
+status, artist, song = get_song_data(current_station)
 led.set_rgb(0, 32, 0)
 gc.collect()
 display = create_display()
@@ -82,10 +86,13 @@ while True:
     ticks_now = time.ticks_ms()
     
     if time.ticks_diff(ticks_now, last_updated) > secrets.REFRESH_INTERVAL * 1000:
+        display.set_pen(WHITE_PEN)
+        display.text("Updating...", 10, 180, 300, scale = 3)
+        display.update()
         led.set_rgb(61, 21, 15)   
         display = None
         gc.collect()
-        status, artist, song = get_song_data("bbc_radio_two")
+        status, artist, song = get_song_data(current_station)
         gc.collect()    
         display = create_display()
         last_updated = time.ticks_ms()
