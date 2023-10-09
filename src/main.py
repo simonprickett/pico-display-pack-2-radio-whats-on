@@ -4,17 +4,22 @@ import secrets # TODO rename to config or something
 import time
 import urequests
 
-from picographics import PicoGraphics, DISPLAY_PICO_DISPLAY_2, PEN_RGB565
+from picographics import PicoGraphics, DISPLAY_PICO_DISPLAY_2, PEN_RGB332
 from pimoroni import Button, RGBLED
 
 def create_display():
-    return PicoGraphics(display=DISPLAY_PICO_DISPLAY_2, pen_type=PEN_RGB565, rotate=0)
+    return PicoGraphics(display=DISPLAY_PICO_DISPLAY_2, pen_type=PEN_RGB332, rotate=0)
 
 def get_song_data(radio_station):
-    now_playing = urequests.get(f"https://rms.api.bbc.co.uk/v2/services/{radio_station}/segments/latest?experience=domestic&offset=0&limit=1", headers= {"User-Agent": "PicoW"}).json()    
-    status = now_playing["data"][0]["offset"]["label"]
-    artist = now_playing["data"][0]["titles"]["primary"]
-    song = now_playing["data"][0]["titles"]["secondary"]
+    now_playing = urequests.get(f"https://rms.api.bbc.co.uk/v2/services/{radio_station}/segments/latest?experience=domestic&offset=0&limit=1", headers= {"User-Agent": "PicoW"}).json()
+    if len(now_playing["data"]) > 0:
+        status = now_playing["data"][0]["offset"]["label"]
+        artist = now_playing["data"][0]["titles"]["primary"]
+        song = now_playing["data"][0]["titles"]["secondary"]
+    else:
+        status = "NO DATA"
+        artist = "NO DATA"
+        song = "NO DATA"
         
     # TODO sanitize special characters out of these values...
     return status, artist, song
