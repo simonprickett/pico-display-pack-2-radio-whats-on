@@ -72,14 +72,14 @@ while not wlan.isconnected() and wlan.status() >= 0:
 
 led.set_rgb(0, 32, 0)
 
-display = None
-gc.collect()
+#display = None
+#gc.collect()
 
 last_updated = time.ticks_ms()
 led.set_rgb(61, 21, 15)  
 status, artist, song = get_song_data(STATION_MAP[current_station]["id"])
 led.set_rgb(0, 32, 0)
-gc.collect()
+#gc.collect()
 display = create_display()
 
 button_a = Button(12)
@@ -91,14 +91,16 @@ show_artist = True
 last_refreshed = time.ticks_ms()
 
 while True:
-    gc.collect()
+    #gc.collect()
     
     ticks_now = time.ticks_ms()
     
     if time.ticks_diff(ticks_now, last_refreshed) > 3000:
+        # TODO should I clear the display here?
         display.set_pen(BLACK_PEN)
-        display.rectangle(0, 160, 320, 240)
-        display.update()
+        #display.rectangle(0, 160, 320, 240)
+        #display.update()
+        display.clear()
         
         h_offset = 0
 
@@ -113,7 +115,7 @@ while True:
         display.set_font("bitmap8")
         display.text(STATION_MAP[current_station]["display"], 228 + h_offset, 50, scale = 10)    
 
-        display.update()
+        #display.update()
         display.set_font("bitmap6")
         
         if show_artist:
@@ -151,11 +153,11 @@ while True:
         display.text("Updating...", 10, 180, 300, scale = 3)
         display.update()
         led.set_rgb(61, 21, 15)   
-        display = None
-        gc.collect()
+        #display = None
+        #gc.collect()
         status, artist, song = get_song_data(STATION_MAP[current_station]["id"])
-        gc.collect()    
-        display = create_display()
+        #gc.collect()    
+        #display = create_display()
         last_updated = time.ticks_ms()
         led.set_rgb(0, 32, 0)
     
