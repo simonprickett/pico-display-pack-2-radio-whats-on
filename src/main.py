@@ -1,6 +1,6 @@
 import gc
 import network
-import secrets # TODO rename to config or something
+import secrets
 import time
 import urequests
 
@@ -12,6 +12,7 @@ def create_display():
 
 def get_song_data(radio_station):
     now_playing = urequests.get(f"https://rms.api.bbc.co.uk/v2/services/{radio_station}/segments/latest?experience=domestic&offset=0&limit=1", headers= {"User-Agent": "PicoW"}).json()
+
     if len(now_playing["data"]) > 0:
         status = now_playing["data"][0]["offset"]["label"]
         artist = now_playing["data"][0]["titles"]["primary"]
@@ -27,7 +28,14 @@ def get_song_data(radio_station):
 led = RGBLED(6, 7, 8)
 display = create_display()
 
-# TODO move this out into config...
+# How often to refresh the data (seconds).
+REFRESH_INTERVAL = 30
+
+# Which radio station to show at startup (from STATION_MAP)
+DEFAULT_STATION = "b"
+
+# Details required for the four stations to associate with
+# the A, B, X, Y buttons on the device.
 STATION_MAP = {
     "a": {
         "id": "bbc_radio_one",
@@ -58,9 +66,9 @@ WHITE_PEN = display.create_pen(255, 255, 255)
 display.set_pen(BLACK_PEN)
 display.clear()
 
-current_station = secrets.DEFAULT_STATION
+current_station = DEFAULT_STATION
 
-# TODO some sort of loading message...
+# TODO some sort of connecting message...
 led.set_rgb(128, 0, 0) 
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
@@ -71,15 +79,10 @@ while not wlan.isconnected() and wlan.status() >= 0:
     time.sleep(0.2)
 
 led.set_rgb(0, 32, 0)
-
-#display = None
-#gc.collect()
-
 last_updated = time.ticks_ms()
-led.set_rgb(61, 21, 15)  
+led.set_rgb(61, 21, 15)
 status, artist, song = get_song_data(STATION_MAP[current_station]["id"])
 led.set_rgb(0, 32, 0)
-#gc.collect()
 display = create_display()
 
 button_a = Button(12)
@@ -91,15 +94,10 @@ show_artist = True
 last_refreshed = time.ticks_ms()
 
 while True:
-    #gc.collect()
-    
     ticks_now = time.ticks_ms()
     
     if time.ticks_diff(ticks_now, last_refreshed) > 3000:
-        # TODO should I clear the display here?
         display.set_pen(BLACK_PEN)
-        #display.rectangle(0, 160, 320, 240)
-        #display.update()
         display.clear()
         
         h_offset = 0
@@ -115,7 +113,6 @@ while True:
         display.set_font("bitmap8")
         display.text(STATION_MAP[current_station]["display"], 228 + h_offset, 50, scale = 10)    
 
-        #display.update()
         display.set_font("bitmap6")
         
         if show_artist:
@@ -144,7 +141,7 @@ while True:
         current_station = "y"
         last_updated = 0
             
-    if time.ticks_diff(ticks_now, last_updated) > secrets.REFRESH_INTERVAL * 1000:
+    if time.ticks_diff(ticks_now, last_updated) > REFRESH_INTERVAL * 1000:
         display.set_pen(BLACK_PEN)
         display.rectangle(0, 160, 320, 240)
         display.update()
@@ -153,13 +150,9 @@ while True:
         display.text("Updating...", 10, 180, 300, scale = 3)
         display.update()
         led.set_rgb(61, 21, 15)   
-        #display = None
-        #gc.collect()
         status, artist, song = get_song_data(STATION_MAP[current_station]["id"])
-        #gc.collect()    
-        #display = create_display()
+
         last_updated = time.ticks_ms()
         led.set_rgb(0, 32, 0)
     
     time.sleep(0.1)
-
