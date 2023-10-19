@@ -7,22 +7,6 @@ import urequests
 from picographics import PicoGraphics, DISPLAY_PICO_DISPLAY_2, PEN_RGB332
 from pimoroni import Button, RGBLED
 
-# Retrieve current / last played song information for a given BBC radio station.
-def get_song_data(radio_station):
-    now_playing = urequests.get(f"https://rms.api.bbc.co.uk/v2/services/{radio_station}/segments/latest?experience=domestic&offset=0&limit=1", headers= {"User-Agent": "PicoW"}).json()
-
-    if len(now_playing["data"]) > 0:
-        status = now_playing["data"][0]["offset"]["label"]
-        artist = now_playing["data"][0]["titles"]["primary"]
-        song = now_playing["data"][0]["titles"]["secondary"]
-    else:
-        status = "NO DATA"
-        artist = "NO DATA"
-        song = "NO DATA"
-        
-    # TODO sanitize special characters out of these values...
-    return status, artist, song
-
 # Initialize the LED and create a display object for pico graphics.
 led = RGBLED(6, 7, 8)
 display = PicoGraphics(display=DISPLAY_PICO_DISPLAY_2, pen_type=PEN_RGB332, rotate=0)
@@ -64,10 +48,28 @@ STATION_MAP = {
 BLACK_PEN = display.create_pen(0, 0, 0)
 WHITE_PEN = display.create_pen(255, 255, 255)
 
-display.set_pen(BLACK_PEN)
-display.clear()
-
 current_station = DEFAULT_STATION
+
+# Clear the screen.
+def clear_screen():
+    display.set_pen(BLACK_PEN)
+    display.clear()
+
+# Retrieve current / last played song information for a given BBC radio station.
+def get_song_data(radio_station):
+    now_playing = urequests.get(f"https://rms.api.bbc.co.uk/v2/services/{radio_station}/segments/latest?experience=domestic&offset=0&limit=1", headers= {"User-Agent": "PicoW"}).json()
+
+    if len(now_playing["data"]) > 0:
+        status = now_playing["data"][0]["offset"]["label"]
+        artist = now_playing["data"][0]["titles"]["primary"]
+        song = now_playing["data"][0]["titles"]["secondary"]
+    else:
+        status = "NO DATA"
+        artist = "NO DATA"
+        song = "NO DATA"
+        
+    # TODO sanitize special characters out of these values...
+    return status, artist, song
 
 # Attempt to connect to the network (config in secrets.py).
 led.set_rgb(128, 0, 0) 
@@ -79,10 +81,7 @@ n = 0
 led.set_rgb(61, 21, 15)
 
 while not wlan.isconnected() and wlan.status() >= 0:
-    # TODO refactor this to a clear_display function.
-    display.set_pen(BLACK_PEN)
-    display.clear()
-    
+    clear_screen()
     display.set_pen(WHITE_PEN)
     display.text(f"CONNECTING {SPINNER_CHARS[n]}", 1, 115, scale = 5)
     display.update()
@@ -90,9 +89,7 @@ while not wlan.isconnected() and wlan.status() >= 0:
     n = n + 1 if n < len(SPINNER_CHARS) - 1 else 0
     time.sleep(0.2)
 
-display.set_pen(BLACK_PEN)
-display.clear()
-
+clear_screen()
 display.set_pen(WHITE_PEN)
 
 # Display the current WIFI status.
@@ -133,8 +130,7 @@ while True:
     
     if time.ticks_diff(ticks_now, last_refreshed) > 3000:
         # Update the display with the current information.
-        display.set_pen(BLACK_PEN)
-        display.clear()
+        clear_screen()
         
         h_offset = 0
 
@@ -185,6 +181,7 @@ while True:
             
     # Periodic update - get fresh information from the BBC.
     if time.ticks_diff(ticks_now, last_updated) > REFRESH_INTERVAL * 1000:
+        # Clear the part of the screen that shows the artist/song information.
         display.set_pen(BLACK_PEN)
         display.rectangle(0, 160, 320, 240)
         display.update()
