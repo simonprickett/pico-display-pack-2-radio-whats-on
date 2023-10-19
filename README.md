@@ -5,6 +5,8 @@
 
 TODO
 
+![Solving a problem with the Amazon Echo Show device](readme_images/pico_display_pack_2_with_echo_show.png)
+
 # Shopping List
 
 You'll need the following to build and run this project... no soldering required!
