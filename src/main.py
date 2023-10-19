@@ -28,6 +28,8 @@ def get_song_data(radio_station):
 led = RGBLED(6, 7, 8)
 display = create_display()
 
+SPINNER_CHARS = [ "\\", "|", "/", "-" ]
+
 # How often to refresh the data (seconds).
 REFRESH_INTERVAL = 30
 
@@ -74,11 +76,29 @@ wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 wlan.connect(secrets.WIFI_SSID, secrets.WIFI_PASSWORD)
 
+n = 0
+led.set_rgb(61, 21, 15)
+
 while not wlan.isconnected() and wlan.status() >= 0:
-    led.set_rgb(61, 21, 15) 
+    # TODO refactor this to a clear_display function.
+    display.set_pen(BLACK_PEN)
+    display.clear()
+    
+    display.set_pen(WHITE_PEN)
+    display.text(f"CONNECTING {SPINNER_CHARS[n]}", 1, 115, scale = 5)
+    display.update()
+    
+    n = n + 1 if n < len(SPINNER_CHARS) - 1 else 0
     time.sleep(0.2)
 
+# TODO check status don't always set LED green!
 led.set_rgb(0, 32, 0)
+display.set_pen(BLACK_PEN)
+display.clear()
+display.set_pen(WHITE_PEN)
+display.text(f"CONNECTED: UPDATING", 1, 115, scale = 3)
+display.update()
+    
 last_updated = time.ticks_ms()
 led.set_rgb(61, 21, 15)
 status, artist, song = get_song_data(STATION_MAP[current_station]["id"])
