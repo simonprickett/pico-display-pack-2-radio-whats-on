@@ -11,23 +11,23 @@ You'll need the following to build and run this project... no soldering required
 
 ## Hardware
 
-All links go to the Pimoroni shop in the UK -- they ship worldwide!
+Most of these links go to the Pimoroni shop in the UK (they also ship worldwide!).
 
-* Raspberry Pi Pico W (I recommend the version with the headers pre-soldered, if you want to do some soldering then pick up a Pico W without headers, get a set of headers and solder them on!)
-* Pimoroni Pico Display Pack 2.0.  A spacious 320 x 240 pixel LCD display for Raspberry Pi Pico, with four buttons and an RGB LED.  This project uses all of these features.
-* A USB to micro USB data cable (to provide power to the project and install code on the Pico W).
-* A USB plug if you want to plug the project into a wall socket and power it from there.
+* [Raspberry Pi Pico W](https://shop.pimoroni.com/products/raspberry-pi-pico-w?variant=40059369652307) (I recommend the version with the headers pre-soldered, if you want to do some soldering then pick up a Pico W without headers, get a set of headers and solder them on!)
+* [Pimoroni Pico Display Pack 2.0](https://shop.pimoroni.com/products/pico-display-pack-2-0?variant=39374122582099).  A 320 x 240 pixel LCD display for Raspberry Pi Pico, with four buttons and an RGB LED.  This project uses all of these features.
+* A [USB to micro USB data cable](https://shop.pimoroni.com/products/usb-a-to-microb-cable-red?variant=32065140746) (to provide power to the project and install code on the Pico W).  I like red cables but any colour and length will do so long as it provides both charging and data.
+* A [USB plug](https://www.amazon.co.uk/TECHNOPLAY-Charger-Adapter-1000mAh-Compatible-White/dp/B09HDRYG7J/?th=1) if you want to power the project from a wall socket.  If you have one from a phone that you already own, that'll work fine.
 
 ## Software
 
 This stuff's free! (but if you enjoy Thonny, please check out their "Support Ukraine" initiative [here](https://github.com/thonny/thonny/wiki/Support-Ukraine)).
 
-* Pimoroni MicroPython latest build for the Raspberry Pi Pico W.  This contains the MicroPython runtime plus pre-installed libraries for Pimoroni products that the code depends on.
-* Thonny IDE - a simple code editor that connects to the Raspberry Pi Pico W to install, run and debug code.  Alternative IDEs (for example Visual Studio Code with appropriate extensions) are available - if you're comfortable using one of those with the Raspberry Pi Pico W then go for it!
+* Pimoroni MicroPython runtime.  You'll want the latest build for the Raspberry Pi Pico W.  This contains the MicroPython runtime plus pre-installed libraries for Pimoroni products that the code depends on.  Download the latest `.uf2` file for the Pi Pico W from GitHub [here](https://github.com/pimoroni/pimoroni-pico/releases) (it will be named something like `pimoroni-picow-vX.XX.X-micropython.uf2`).  
+* [Thonny IDE](https://thonny.org/) - a simple code editor that connects to the Raspberry Pi Pico W to install, run and debug code.  Alternative IDEs (for example Visual Studio Code with appropriate extensions) are available - if you're comfortable using one of those with the Raspberry Pi Pico W then go for it!
 
 # Try it!
 
-TODO
+There's a few steps to complete before you can have this running on your hardware... they're not hard, let's take them one at a time...
 
 ## Assemble the Hardware
 
@@ -54,7 +54,20 @@ Save your changes.
 
 ## Radio Station Configuration
 
-TODO
+This project displays "what's on" data for four BBC radio stations.  You change the current station displayed on the screen using the four buttons.  These are labelled A, B, X and Y.
+
+The default configuration is as follows:
+
+| Button | Station          |
+|--------|------------------|
+| A      | Radio 1          |
+| B      | Radio 2          |
+| X      | Radio 6 Music    |
+| Y      | Radio Nottingham |
+
+If you're just trying this out and are happy with these stations, skip the rest of this section.  If you'd like to change them for your own choices read on...
+
+Here are some `id` values for a selection of national and local BBC radio stations.  
 
 | Station                  | `id`                       |
 |--------------------------|----------------------------|
@@ -81,6 +94,46 @@ TODO
 | Radio Sheffield          | `bbc_radio_sheffield`      |
 | Radio WM                 | `bbc_wm`                   |
 | BBC Three Counties Radio | `bbc_three_counties_radio` |
+
+If you don't see one that you're looking for here, it's easy to figure out the value you need.  Begin [here](https://www.bbc.co.uk/sounds/stations) at the BBC Sounds list of stations.  
+
+Now click on the station that you want to get an ID for.  The value you need is the last part of the URL that your browser takes you to. 
+
+For example if you wanted to add BBC Hereford and Worcester, the ID is `bbc_radio_hereford_worcester` taken from the URL `https://www.bbc.co.uk/sounds/play/live:bbc_radio_hereford_worcester`.
+
+I'll leave the choice of pen colour and character to display for each station up to you.
+
+Once you've chosen the stations that you want to assign to each button, edit `main.py`, changing the values here:
+
+```python
+STATION_MAP = {
+    "a": {
+        "id": "bbc_radio_one",
+        "display": "1",
+        "pen": display.create_pen(0, 0, 0),
+        "outline": display.create_pen(128, 128, 128)
+    },
+    "b": {
+        "id": "bbc_radio_two",
+        "display": "2",
+        "pen": display.create_pen(250, 100, 0)
+    },
+    "x": {
+        "id": "bbc_6music",
+        "display": "6",
+        "pen": display.create_pen(1, 95, 13)
+    },
+    "y": {
+        "id": "bbc_radio_nottingham",
+        "display": "N",
+        "pen": display.create_pen(32, 14, 51)
+    }
+}
+```
+
+TODO explain the values in the dictionary above.
+
+Save your changes to `main.py`.
 
 ## Copying the Code to the Raspberry Pi Pico W
 
