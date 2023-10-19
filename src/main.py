@@ -91,19 +91,35 @@ while not wlan.isconnected() and wlan.status() >= 0:
     n = n + 1 if n < len(SPINNER_CHARS) - 1 else 0
     time.sleep(0.2)
 
-# TODO check status don't always set LED green!
-led.set_rgb(0, 32, 0)
 display.set_pen(BLACK_PEN)
 display.clear()
+
 display.set_pen(WHITE_PEN)
-display.text(f"CONNECTED: UPDATING", 1, 115, scale = 3)
+
+# Display the current WIFI status.
+if wlan.status() == network.STAT_GOT_IP:
+    display.text(f"CONNECTED: UPDATING", 3, 115, scale = 3)
+elif wlan.status() == network.STAT_WRONG_PASSWORD:
+    display.text("BAD WIFI PASSWORD", 20, 115, scale =  3)
+elif wlan.status() == network.STAT_NO_AP_FOUND:
+    display.text("BAD WIFI SSID", 60, 115, scale =  3)
+else:
+    display.text("UNKNOWN WIFI ERROR", 15, 115, scale =  3)
+
 display.update()
+
+if (wlan.status() != network.STAT_GOT_IP):
+    # Set the LED to red and go no further.
+    led.set_rgb(32, 0, 0)
     
+    while True:
+        time.sleep(1)
+
+# Got wifi, so perform initial data load from BBC API.
 last_updated = time.ticks_ms()
 led.set_rgb(61, 21, 15)
 status, artist, song = get_song_data(STATION_MAP[current_station]["id"])
 led.set_rgb(0, 32, 0)
-display = create_display()
 
 button_a = Button(12)
 button_b = Button(13)
