@@ -7,9 +7,7 @@ import urequests
 from picographics import PicoGraphics, DISPLAY_PICO_DISPLAY_2, PEN_RGB332
 from pimoroni import Button, RGBLED
 
-def create_display():
-    return PicoGraphics(display=DISPLAY_PICO_DISPLAY_2, pen_type=PEN_RGB332, rotate=0)
-
+# Retrieve current / last played song information for a given BBC radio station.
 def get_song_data(radio_station):
     now_playing = urequests.get(f"https://rms.api.bbc.co.uk/v2/services/{radio_station}/segments/latest?experience=domestic&offset=0&limit=1", headers= {"User-Agent": "PicoW"}).json()
 
@@ -25,8 +23,9 @@ def get_song_data(radio_station):
     # TODO sanitize special characters out of these values...
     return status, artist, song
 
+# Initialize the LED and create a display object for pico graphics.
 led = RGBLED(6, 7, 8)
-display = create_display()
+display = PicoGraphics(display=DISPLAY_PICO_DISPLAY_2, pen_type=PEN_RGB332, rotate=0)
 
 SPINNER_CHARS = [ "\\", "|", "/", "-" ]
 
@@ -70,7 +69,7 @@ display.clear()
 
 current_station = DEFAULT_STATION
 
-# TODO some sort of connecting message...
+# Attempt to connect to the network (config in secrets.py).
 led.set_rgb(128, 0, 0) 
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
@@ -133,11 +132,15 @@ while True:
     ticks_now = time.ticks_ms()
     
     if time.ticks_diff(ticks_now, last_refreshed) > 3000:
+        # Update the display with the current information.
         display.set_pen(BLACK_PEN)
         display.clear()
         
         h_offset = 0
 
+        # Draw the coloured circle for the station identity background, with
+        # an outline if needed (e.g. when the station's colour is indistinguishable
+        # from the black background).
         if "outline" in STATION_MAP[current_station]:
             display.set_pen(STATION_MAP[current_station]["outline"])
             display.circle(245, 85, 62)
@@ -151,6 +154,7 @@ while True:
 
         display.set_font("bitmap6")
         
+        # Alternate between showing the artist name and song title.
         if show_artist:
             text = artist
         else:
@@ -163,7 +167,9 @@ while True:
     
         display.update()
         last_refreshed = time.ticks_ms()
-    
+
+    # Check if any of the buttons were pressed and change station if so.
+    # Reset the last updated time to force an immediate update.
     if button_a.read():
         current_station = "a"
         last_updated = 0
@@ -177,6 +183,7 @@ while True:
         current_station = "y"
         last_updated = 0
             
+    # Periodic update - get fresh information from the BBC.
     if time.ticks_diff(ticks_now, last_updated) > REFRESH_INTERVAL * 1000:
         display.set_pen(BLACK_PEN)
         display.rectangle(0, 160, 320, 240)
@@ -191,4 +198,5 @@ while True:
         last_updated = time.ticks_ms()
         led.set_rgb(0, 32, 0)
     
+    # Sleep a little to avoid a tight loop.
     time.sleep(0.1)
