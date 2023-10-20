@@ -42,7 +42,9 @@ There's a few steps to complete before you can have this running on your hardwar
 
 ## Assemble the Hardware
 
-TODO
+TODO -- explain this...
+
+![Assembling the hardware](readme_images/assembly.png)
 
 ## Install Pimoroni MicroPython on the Raspberry Pi Pico W
 
