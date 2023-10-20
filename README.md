@@ -3,9 +3,17 @@
 
 # Introduction
 
-TODO
+This is a small scale project that I made to solve a problem I had with our Amazon Echo Show device.
+
+When using the [BBC Sounds skill](https://www.bbc.co.uk/sounds/help/questions/listening-on-a-smart-speaker/alexa) to play various BBC Radio stations I noticed that the current song and artist information isn't displayed.  The BBC has the data for this as it appears on the [web version of BBC Sounds](https://www.bbc.co.uk/sounds).
+
+I decided to see how the website works, found the JSON feed with the information I needed and made my own companion display for the Echo Show...
 
 ![Solving a problem with the Amazon Echo Show device](readme_images/pico_display_pack_2_with_echo_show.png)
+
+If you're reading this and you're responsible for the BBC Sounds skill on Alexa I'd love to hear why you don't show this basic information... other skills can do it... here's Absolute Radio for example:
+
+TODO pic of Echo Show with Absolute Radio...
 
 # Shopping List
 
@@ -66,7 +74,7 @@ WIFI_PASSWORD = "Your wifi password..."
 
 Save your changes.
 
-## Radio Station Configuration
+## Optional: Radio Station Configuration
 
 This project displays "what's on" data for four BBC radio stations.  You change the current station displayed on the screen using the four buttons.  These are labelled A, B, X and Y.
 
@@ -159,7 +167,7 @@ TODO
 
 # How Does it Work?
 
-TODO
+TODO - information on the JSON feed, working with PicoGraphics, could I show the presenter info and the current song image etc.  
 
 # Have Fun!
 
