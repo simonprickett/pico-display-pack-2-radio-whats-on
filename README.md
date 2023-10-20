@@ -41,11 +41,23 @@ TODO
 
 ## Get the Code
 
-TODO
+Grab a copy of the code by cloning it or downloading a zip of it from the GitHub repository ([here](https://github.com/simonprickett/pico-display-pack-2-radio-whats-on)).
+
+If you have the `git` command line tools installed, clone the repository like this:
+
+```
+git clone https://github.com/simonprickett/pico-display-pack-2-radio-whats-on.git
+```
+
+This creates a folder named `pico-display-pack-2-radio-whats-on` wherever you ran the git clone command.  If you chose to download a zip file from GitHub insteead, unzip the file and you'll get the same folder.
+
+Use Thonny or your own choice of IDE to open this folder.  
+
+The next step is to configure the code to connect to your WiFi network.
 
 ## Network Configuration
 
-You will need to add your wifi SSID and password to the `secrets.py` file.  Edit `secrets.py` and replace the template content with the correct values for your network:
+You will need to add your WiFi SSID (network name) and password to the `secrets.py` file.  Edit `secrets.py` and replace the template content with the correct values for your network:
 
 ```python
 WIFI_SSID = "Your wifi network name..."
