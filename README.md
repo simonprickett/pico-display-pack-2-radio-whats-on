@@ -1,4 +1,5 @@
 # BBC Radio "What's On" Display for Pimoroni Pico Display Pack 2
+
 ![Demo of the code running on the Display Pack 2.0](readme_images/radio_2_demo.gif)
 
 # Introduction
@@ -11,9 +12,9 @@ I decided to see how the website works, found the JSON feed with the information
 
 ![Solving a problem with the Amazon Echo Show device](readme_images/pico_display_pack_2_with_echo_show.png)
 
-If you're reading this and you're responsible for the BBC Sounds skill on Alexa I'd love to hear why you don't show this basic information... other skills can do it... here's Absolute Radio for example:
+If you're reading this and you're responsible for the BBC Sounds skill on Alexa I'd love to hear why you don't show this basic information (feel free to [get in touch](https://simonprickett.dev/contact/))... other skills can do it... here's Absolute Radio for example:
 
-TODO pic of Echo Show with Absolute Radio...
+![Absolute Radio can show artist and song information](readme_images/absolute_radio.jpg)
 
 # Shopping List
 
