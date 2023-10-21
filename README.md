@@ -52,7 +52,17 @@ If you bought a Pico W without pre-soldered headers, you'll need to solder the h
 
 ## Install Pimoroni MicroPython on the Raspberry Pi Pico W
 
-TODO
+The Raspberry Pi Pico W doesn't come with a MicroPython runtime installed by default.  Earlier, you downloaded the latest version of the Pi Pico W MicroPython image from Pimoroni.  You'll sometimes see this referred to as "Pirate Brand MicroPython".
+
+We're using Pimoroni's distribution as it contains drivers for many of their products including the Display Pack 2 that we need for this project.
+
+Install the MicroPython runtime by:
+
+1. Holding down the BOOTSEL button on the back of the Pi Pico W whilst connecting it to your machine using the USB->Micro USB cable.
+1. Dragging and dropping the `.uf2` file that you downloaded onto the removable drive named "RPI-RP2" that appears on your machine.
+1. When the file copy has finished, the removable drive "RPI-RP2" should disappear, and you've now got a Pi Pico W running MicroPython.
+
+If you get stuck or need a more detailed description of how to do this, check out Pimoroni's guide [here](https://learn.pimoroni.com/article/getting-started-with-pico#installing-the-custom-firmware).
 
 ## Get the Code
 
