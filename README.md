@@ -42,9 +42,13 @@ There's a few steps to complete before you can have this running on your hardwar
 
 ## Assemble the Hardware
 
-TODO -- explain this...
+If you bought a Pi Pico W with the headers pre-soldered, then attaching the Display Pack is simply a matter of aligning the male headers on the Pico with the corresponding female ones on the Display pack and pushing the two together.
+
+Pimoroni even print an image of the Pico on the underside of the Display Pack for you so that it's easy to see how to orient the Pico so that the micro USB port is at the right end of the Display Pack...
 
 ![Assembling the hardware](readme_images/assembly.png)
+
+If you bought a Pico W without pre-soldered headers, you'll need to solder the headers on first.  If you need help with this I recommend watching [this video](https://www.youtube.com/watch?v=R11QanPDccs) on the "Learn Embedded Systems" channel on YouTube.
 
 ## Install Pimoroni MicroPython on the Raspberry Pi Pico W
 
