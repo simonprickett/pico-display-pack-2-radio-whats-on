@@ -82,7 +82,7 @@ The next step is to configure the code to connect to your WiFi network.
 
 ## Network Configuration
 
-You will need to add your WiFi SSID (network name) and password to the `secrets.py` file.  Edit `secrets.py` and replace the template content with the correct values for your network:
+You will need to add your WiFi SSID (network name) and password to the `src/secrets.py` file.  Edit `src/secrets.py` and replace the template content with the correct values for your network:
 
 ```python
 WIFI_SSID = "Your wifi network name..."
@@ -142,7 +142,7 @@ For example if you wanted to add BBC Hereford and Worcester, the ID is `bbc_radi
 
 I'll leave the choice of pen colour and character to display for each station up to you.
 
-Once you've chosen the stations that you want to assign to each button, edit `main.py`, changing the values here:
+Once you've chosen the stations that you want to assign to each button, edit `src/main.py`, changing the values here:
 
 ```python
 STATION_MAP = {
@@ -177,15 +177,33 @@ The above is a Python dictionary which has top level keys "a", "b", "x", "y" - t
 * `pen` (required): A [Pimoroni Pico Graphics](https://github.com/pimoroni/pimoroni-pico/tree/main/micropython/modules/picographics) pen used to draw and colour in the circular area on the screen.  Change the three numeric values (R, G, B) to represent the colour of your choice.  Here's an [RGB colour picker](https://www.rapidtables.com/web/color/RGB_Color.html) you can use.  In the example data, I've set the colours to match those used by the BBC for the respective radio stations.
 * `outline` (optional): Another Pico Graphics pen.  This is optional and only needed when the colour you choose for `pen` can't easily be distinguished from the black background on the display.  If this value is present, the code will use this pen to draw an outline around the circle.  In the sample data set this is needed for Radio 1 as their brand colour is back.
 
-If you chose to change the button configurations, save your changes to `main.py`.
+You can also specify which of the four stations is the default one (loaded on startup without having to press a button).  Find this line of code:
+
+```python
+DEFAULT_STATION = "b"
+```
+
+And change the value to "a", "b", "x" or "y" according to your preference.
+
+If you changed the button configurations and/or default station, save your changes to `src/main.py`.
 
 ## Copying the Code to the Raspberry Pi Pico W
 
-TODO
+You now need to get a copy of `src/main.py` and `src/secrets.py` onto the Pi Pico W.
+
+Start Thonny.  Click the hamburger menu in the bottom right hand corner and select "MicroPython (Raspberry Pi Pico)" from the list of available runtimes.  From Thonny's "View" menu, ensure that "Files" is checked.
+
+You should now see a "Raspberry Pi Pico" section in the file browser to the left in the Thonny window.
+
+Shift click both `src/main.py` and `src/secrets.py` in the "Files" part of the file browser.  Now right click and select "Upload to /" from the menu that pops up.  This copies the files across to your Raspberry Pi Pico W.
 
 ## Running the Code
 
-TODO
+The code runs whenever the Raspberry Pi Pico W starts up.  Unplug the Pico from your machine, then plug it back in again or plug it into a USB wall power adapter.
+
+You should see the device boot up, attempt to connect to the WiFi network and then display data for the default radio station.
+
+If it doesn't work, reconnect the Pico to Thonny and make sure that the network credentials in `secrets.py` are correct.
 
 # How Does it Work?
 
