@@ -170,9 +170,14 @@ STATION_MAP = {
 }
 ```
 
-TODO explain the values in the dictionary above.
+The above is a Python dictionary which has top level keys "a", "b", "x", "y" - these are used to configure each button on the display.  Each button's key contains another dictionary that has keys as follows:
 
-Save your changes to `main.py`.
+* `id` (required): The ID of the Radio station to get data for. 
+* `display` (required): A single character to display as the station's logo (it will go in the centre of a circle on the display).  This will be rendered in white.
+* `pen` (required): A [Pimoroni Pico Graphics](https://github.com/pimoroni/pimoroni-pico/tree/main/micropython/modules/picographics) pen used to draw and colour in the circular area on the screen.  Change the three numeric values (R, G, B) to represent the colour of your choice.  Here's an [RGB colour picker](https://www.rapidtables.com/web/color/RGB_Color.html) you can use.  In the example data, I've set the colours to match those used by the BBC for the respective radio stations.
+* `outline` (optional): Another Pico Graphics pen.  This is optional and only needed when the colour you choose for `pen` can't easily be distinguished from the black background on the display.  If this value is present, the code will use this pen to draw an outline around the circle.  In the sample data set this is needed for Radio 1 as their brand colour is back.
+
+If you chose to change the button configurations, save your changes to `main.py`.
 
 ## Copying the Code to the Raspberry Pi Pico W
 
