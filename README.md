@@ -207,7 +207,15 @@ If it doesn't work, reconnect the Pico to Thonny and make sure that the network 
 
 # How Does it Work?
 
+This isn't going to be a complete explanation of all of the code, it should be easy enough to follow (see `src/main.py`)... let's take a high level look at how we get the station information and then how it's displayed.
+
+## Getting the Information
+
 TODO - information on the JSON feed, working with PicoGraphics, could I show the presenter info and the current song image etc.  
+
+## Displaying the Information
+
+TODO - short run through the Pico Graphics stuff.
 
 # Have Fun!
 
