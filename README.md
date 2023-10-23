@@ -211,7 +211,82 @@ This isn't going to be a complete explanation of all of the code, it should be e
 
 ## Getting the Information
 
-TODO - information on the JSON feed, working with PicoGraphics, could I show the presenter info and the current song image etc.  
+I found out that the track and artist information is available as a JSON feed by looking at the requests sent from the BBC Sounds page for Radio 2 ([here](https://www.bbc.co.uk/sounds/play/live:bbc_radio_two)).
+
+Using Chrome's network inspector I found that this URL is requested periodically and contains the information we need:
+
+```
+https://rms.api.bbc.co.uk/v2/services/bbc_radio_two/segments/latest?experience=domestic&offset=0&limit=4
+```
+
+Using the station ID from the end of the page URL (e.g. `bbc_radio_two`) we can infer that swapping `bbc_radio_two` for another station's ID will get information for that station.  I  played around with this and found that is indeed what happens.
+
+In fact there's more information that I'm using here, including the URL of an image to show for the artist.  I didn't do this with the Display Pack as the Pico W didn't have enough memory, but you could use it with a device that has more RAM. 
+
+Here's what the data looks like:
+
+```json
+{
+  "$schema": "https://rms.api.bbc.co.uk/docs/swagger.json#/definitions/SegmentItemsResponse",
+  "total": 4,
+  "limit": 4,
+  "offset": 0,
+  "data": [
+    {
+      "type": "segment_item",
+      "id": "p0gnbhlc",
+      "urn": "urn:bbc:radio:segment:music:nznnmm",
+      "segment_type": "music",
+      "titles": {
+        "primary": "Eminem",
+        "secondary": "Lose Yourself",
+        "tertiary": null
+      },
+      "synopses": null,
+      "image_url": "https://ichef.bbci.co.uk/images/ic/{recipe}/p02l4wr2.jpg",
+      "offset": {
+        "start": 770,
+        "end": 1034,
+        "label": "Now Playing",
+        "now_playing": true
+      },
+      "uris": [
+        
+      ]
+    },...
+```
+
+I decided to only fetch the most recent song to reduce memory requirements and processing load on the Pico W.  So the final generalised URL we need looks like this:
+
+```
+https://rms.api.bbc.co.uk/v2/services/STATION_ID/segments/latest?experience=domestic&offset=0&limit=1
+```
+
+So the approach I took is to call this URL periodically and grab the following information from the response:
+
+* `data[0].titles.primary` - the artist name.
+* `data[0].titles.secondary` - the track name.
+* `data[0].offset.label` - text description telling us whether the song is "now playing" or was "2 minutes ago" etc. 
+
+To get the data from the BBC, I used the standard `urequests` MicroPython package like so with some basic safeguards against the data being missing:
+
+```python
+def get_song_data(radio_station):
+    now_playing = urequests.get(f"https://rms.api.bbc.co.uk/v2/services/{radio_station}/segments/latest?experience=domestic&offset=0&limit=1", headers= {"User-Agent": "PicoW"}).json()
+
+    if len(now_playing["data"]) > 0:
+        status = now_playing["data"][0]["offset"]["label"]
+        artist = now_playing["data"][0]["titles"]["primary"]
+        song = now_playing["data"][0]["titles"]["secondary"]
+    else:
+        status = "NO DATA"
+        artist = "NO DATA"
+        song = "NO DATA"
+        
+    return status, artist, song
+```
+
+One thing to note is that I'm explicitly setting the `User-Agent` HTTP header.  This is used to identify the type of browser making the request.  I found that if I didn't set this, the BBC would deny my requests after a few attempts.
 
 ## Displaying the Information
 
