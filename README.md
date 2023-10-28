@@ -378,7 +378,40 @@ For all stations whether or not an outline was drawn, we then create a circle in
 
 ## Swapping Between Stations
 
-TODO button stuff.
+The other functionality that we haven't addressed yet is the ability to change between the four stations configured in the `STATION_MAP` dictionary.  On the Display Pack 2, there are four buttons labelled "a", "b", "x" and "y".  Pimoroni provide a `Button` abstraction that we can use by creating instances of it for each of the GPIO pins that the buttons are connected to:
+
+```python
+from pimoroni import Button
+
+button_a = Button(12)
+button_b = Button(13)
+button_x = Button(14)
+button_y = Button(15)
+```
+
+Detecting a button press is then a simple matter of calling the `read` function on a button instance.  If it returns `True`, the button is being pressed.  This is a polling approach, so needs to be carried out frequently in a loop:
+
+```python
+while True:
+    # Other code omitted...
+
+    # Check if any of the buttons were pressed and change station if so.
+    # Reset the last updated time to force an immediate update.
+    if button_a.read():
+        current_station = "a"
+        last_updated = 0
+    elif button_b.read():
+        current_station = "b"
+        last_updated = 0
+    elif button_x.read():
+        current_station = "x"
+        last_updated = 0
+    elif button_y.read():
+        current_station = "y"
+        last_updated = 0
+```
+
+Whenever a button press is detected, the `current_station` variable is updated to contain the key of the newly selected station and `last_updated` is reset to `0`... this causes code elsewhere in the loop to force an update of the data from the BBC JSON endpoint and a refresh of the display.
 
 # Have Fun!
 
