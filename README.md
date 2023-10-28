@@ -290,7 +290,7 @@ One thing to note is that I'm explicitly setting the `User-Agent` HTTP header.  
 
 ## Displaying the Information
 
-Other than some boilerplate for connecting to the WiFi network, the majority of the code for this project deals with using Pimoroni's excellent [Pico Graphics library](https://github.com/pimoroni/pimoroni-pico/tree/main/micropython/modules/picographics) to draw text and graphics on the screen.
+Other than some boilerplate for connecting to the WiFi network, the majority of the code for this project uses Pimoroni's excellent [Pico Graphics library](https://github.com/pimoroni/pimoroni-pico/tree/main/micropython/modules/picographics) to draw text and graphics on the screen.
 
 At a high level, Pico Graphics abstracts the details of various Pimoroni displays away so that the programmer can mostly deal with them as one thing.  There are some implementation differences for each screen type.  For example the Display Pack 2 we're using here has colours unlike the e-ink display you'll find on the [Badger 2040W](https://shop.pimoroni.com/products/badger-2040-w?variant=40514062188627).
 
@@ -329,6 +329,7 @@ To render text on the display, the code uses the Pico Graphics `text` function, 
 
 ```python
 # text and status are strings containing data about the current song.
+display.set_pen(WHITE_PEN)
 display.set_font("bitmap6")
 display.text(text, 10, 180, 300, scale = 3)
 display.text(status, 10, 60, 200, scale = 4)
@@ -339,7 +340,41 @@ Changes aren't drawn on the screen until we call `update`.
 
 The radio station logo is drawn on the screen as a coloured circle with an optional outline and a single large text character in the middle.  Let's see how that works...
 
-TODO circle drawing stuff.
+Recall that the station information is contained in a Python dictionary that looks like this:
+
+```python
+STATION_MAP = {
+    "a": {
+        "id": "bbc_radio_one",
+        "display": "1",
+        "pen": display.create_pen(0, 0, 0),
+        "outline": display.create_pen(128, 128, 128)
+    },
+    # Same for the other 3 buttons...
+```
+
+To draw the circle for the station's logo in the right colour, we need the `pen` declared here, and potentially also the `outline` pen if one is specified (remember this is optional and only used if the station's circle logo colour isn't clearly distinguishable from the black background).
+
+The variable `current_station` holds the key in the `STATION_MAP` dictionary for the station that's currently selected.  So let's draw the station's logo using this information:
+
+```python
+h_offset = 0
+
+if "outline" in STATION_MAP[current_station]:
+    display.set_pen(STATION_MAP[current_station]["outline"])
+    display.circle(245, 85, 62)
+    h_offset = 2
+            
+display.set_pen(STATION_MAP[current_station]["pen"])
+display.circle(245, 85, 60)
+display.set_pen(WHITE_PEN)
+display.set_font("bitmap8")
+display.text(STATION_MAP[current_station]["display"], 228 + h_offset, 50, scale = 10)    
+```
+
+First up, the code checks if an outline circle is needed and if so sets the pen to the colour specified in the `STATION_MAP` dictionary.  Using the Pico Graphics `circle` function, we draw a 62 pixel radius circle at the given x and y co-ordinates.  This circle will be filled with the colour of the current pen.  If the outline circle was necessary, the variable `h_offset` gets updated.  We use this to adjust the position that the station logo character is drawn at to accommodate the space taken up by the outline.
+
+For all stations whether or not an outline was drawn, we then create a circle in the station's logo colour before switching to the white pen and a larger font to add the character that forms part of the logo.
 
 ## Swapping Between Stations
 
