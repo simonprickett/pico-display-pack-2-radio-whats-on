@@ -290,6 +290,12 @@ One thing to note is that I'm explicitly setting the `User-Agent` HTTP header.  
 
 ## Displaying the Information
 
+Other than some boilerplate for connecting to the WiFi network, the majority of the code for this project deals with using Pimoroni's excellent [Pico Graphics library](https://github.com/pimoroni/pimoroni-pico/tree/main/micropython/modules/picographics) to draw text and graphics on the screen.
+
+At a high level, Pico Graphics abstracts the details of various Pimoroni displays away so that the programmer can mostly deal with them as one thing.  There are some implementation differences for each screen type.  For example the Display Pack 2 we're using here has colours unlike the e-ink display you'll find on the [Badger 2040W](https://shop.pimoroni.com/products/badger-2040-w?variant=40514062188627).
+
+The Pico Graphics API metaphor is one of drawing on displays with pens, where pens potentially have different colours.  There's also support for writing text to a display with a choice of fonts and scaling options as well as drawing lines and shapes.  We'll use all of these things in this project.
+
 TODO - short run through the Pico Graphics stuff.
 
 # Have Fun!
