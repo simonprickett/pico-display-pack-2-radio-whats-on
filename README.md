@@ -296,7 +296,54 @@ At a high level, Pico Graphics abstracts the details of various Pimoroni display
 
 The Pico Graphics API metaphor is one of drawing on displays with pens, where pens potentially have different colours.  There's also support for writing text to a display with a choice of fonts and scaling options as well as drawing lines and shapes.  We'll use all of these things in this project.
 
-TODO - short run through the Pico Graphics stuff.
+Pico Graphics is built into the Pirate brand MicroPython runtime, so there's no extra files to add to the project... we begin by importing the right display and an appropriate pen for it:
+
+```python
+from picographics import PicoGraphics, DISPLAY_PICO_DISPLAY_2, PEN_RGB332
+```
+
+Now we need to initialize Pico Graphics:
+
+```python
+display = PicoGraphics(display=DISPLAY_PICO_DISPLAY_2, pen_type=PEN_RGB332, rotate=0)
+```
+
+Note the use of the `rotate` parameter - useful if you mount your display in an enclosure and want to re-orient the display so that the top points up.
+ 
+We'll need a black and a white pen, so let's create those by passing `create_pen` appropriate RGB colour values:
+
+```python
+BLACK_PEN = display.create_pen(0, 0, 0)
+WHITE_PEN = display.create_pen(255, 255, 255)
+```
+
+The following utility function clears the display basically by painting it with the black pen:
+
+```python
+def clear_screen():
+    display.set_pen(BLACK_PEN)
+    display.clear()
+```
+
+To render text on the display, the code uses the Pico Graphics `text` function, passing in x and y co-ordinates as well as the font scaling factor.  Let's render some text in white using the `bitmap6` font:
+
+```python
+# text and status are strings containing data about the current song.
+display.set_font("bitmap6")
+display.text(text, 10, 180, 300, scale = 3)
+display.text(status, 10, 60, 200, scale = 4)
+display.update()
+```
+
+Changes aren't drawn on the screen until we call `update`.
+
+The radio station logo is drawn on the screen as a coloured circle with an optional outline and a single large text character in the middle.  Let's see how that works...
+
+TODO circle drawing stuff.
+
+## Swapping Between Stations
+
+TODO button stuff.
 
 # Have Fun!
 
