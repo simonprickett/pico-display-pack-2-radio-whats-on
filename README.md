@@ -4,7 +4,7 @@
 
 # Introduction
 
-This is a small scale project that I made to solve a problem I had with our Amazon Echo Show device.
+This is a small scale project that I made to solve a problem I had with our Amazon Echo Show device.  This is the more detailed write up of the project, check out the [article on my website](https://simonprickett.dev/whats-on-bbc-radio-with-pimoroni-pico-display-pack-2/) if you want more of a higher level overview.
 
 When using the [BBC Sounds skill](https://www.bbc.co.uk/sounds/help/questions/listening-on-a-smart-speaker/alexa) to play various BBC Radio stations I noticed that the current song and artist information isn't displayed.  The BBC has the data for this as it appears on the [web version of BBC Sounds](https://www.bbc.co.uk/sounds).
 
